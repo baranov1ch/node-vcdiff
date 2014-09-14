@@ -19,6 +19,6 @@
   },
   "scripts": {
     "test": "node_modules/.bin/mocha --compilers coffee:coffee-script/register",
-    "install": "node lib/install.js"
+    "preinstall": "node lib/build-open-vcdiff.js && node-gyp rebuild"
   }
 }
