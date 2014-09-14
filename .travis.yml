@@ -11,5 +11,7 @@ before_install:
   - cd open-vcdiff-debian
   - sudo dpkg -i *.deb
   - cd ..
+  - sudo ln -s /usr/lib/libvcddec.so.0 /usr/lib/libvcddec.so
+  - sudo ln -s /usr/lib/libvcdenc.so.0 /usr/lib/libvcdenc.so
   - export CXX="g++-4.8"
   - echo $CXX
