@@ -10,7 +10,6 @@
   },
   "main": "./lib/vcdiff",
   "dependencies": {
-    "log-symbols": "*"
   },
   "devDependencies": {
     "coffee-script": "*",
