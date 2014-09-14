@@ -2,6 +2,9 @@
   "targets": [
     {
       "target_name": "vcdiff",
+      "dependencies": [
+        'open-vcdiff',
+      ],
       "sources": [
         "src/vcd_decoder.cc",
         "src/vcd_decoder.h",
@@ -30,6 +33,7 @@
           },
         }],
       ],
-    }
+    },
   ],
+  'includes': [ 'src/third-party/open-vcdiff.gypi' ],
 }
