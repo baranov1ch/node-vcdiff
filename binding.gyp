@@ -16,12 +16,6 @@
         "src/vcdiff.h",
       ],
       "conditions": [
-        ['OS=="linux" or OS=="mac"', {
-          'libraries': [
-            '-lvcdenc',
-            '-lvcddec',
-          ],
-        }],
         ['OS=="linux"', {
           'cflags_cc': ['-std=c++11'],
         }],

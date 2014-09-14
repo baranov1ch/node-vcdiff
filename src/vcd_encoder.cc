@@ -1,6 +1,6 @@
 #include "vcd_encoder.h"
 
-#include <google/vcencoder.h>
+#include "third-party/open-vcdiff/src/google/vcencoder.h"
 
 VcdEncoder::VcdEncoder(
     v8::Local<v8::Object> hashed_dictionary,
