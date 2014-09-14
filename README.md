@@ -1,5 +1,5 @@
 # node-vcdiff
 
-[![Build Status][travis-image]][travis-url]
+[![Build Status](https://travis-ci.org/baranov1ch/node-vcdiff.svg?branch=master)](https://travis-ci.org/baranov1ch/node-vcdiff)
 
 node.js wrapper for [open-vcdiff](https://code.google.com/p/open-vcdiff)
