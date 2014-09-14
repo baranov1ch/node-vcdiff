@@ -8,4 +8,5 @@ before_install:
     #Install and use gcc-4.8 (don't build with gcc-4.6)
     #libstdc++-4.8 is needed by Clang to build too
   - sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  - echo $CXX
+  - export CXX="g++-4.8"
