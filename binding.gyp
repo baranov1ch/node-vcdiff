@@ -18,9 +18,9 @@
       "conditions": [
         ['OS=="linux" or OS=="mac"', {
           'libraries': [
-            'src/third-party/open-vcdiff/lib/libvcdcom.a',
-            'src/third-party/open-vcdiff/lib/libvcdenc.a',
-            'src/third-party/open-vcdiff/lib/libvcddec.a',
+            '<!(pwd)/src/third-party/open-vcdiff/lib/libvcdcom.a',
+            '<!(pwd)/src/third-party/open-vcdiff/lib/libvcdenc.a',
+            '<!(pwd)/src/third-party/open-vcdiff/lib/libvcddec.a',
           ],
         }],
         ['OS=="linux"', {
