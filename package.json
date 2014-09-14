@@ -10,6 +10,7 @@
   },
   "main": "./lib/vcdiff",
   "dependencies": {
+    "log-symbols": "*"
   },
   "devDependencies": {
     "coffee-script": "*",
@@ -17,6 +18,7 @@
     "mocha": "*"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha --compilers coffee:coffee-script/register" 
+    "test": "node_modules/.bin/mocha --compilers coffee:coffee-script/register",
+    "install": "node lib/install.js"
   }
 }

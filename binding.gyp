@@ -15,8 +15,9 @@
       "conditions": [
         ['OS=="linux" or OS=="mac"', {
           'libraries': [
+            '-Lthird-party/open-vcdiff/lib',
             '-lvcdenc',
-            '-lvcddec',
+            '-lvcddec'
           ],
         }],
         ['OS=="linux"', {
