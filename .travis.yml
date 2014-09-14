@@ -8,10 +8,5 @@ before_install:
     #Install and use gcc-4.8 (don't build with gcc-4.6)
     #libstdc++-4.8 is needed by Clang to build too
   - sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev
-  - cd open-vcdiff-debian
-  - sudo dpkg -i *.deb
-  - cd ..
-  - sudo ln -s /usr/lib/libvcddec.so.0 /usr/lib/libvcddec.so
-  - sudo ln -s /usr/lib/libvcdenc.so.0 /usr/lib/libvcdenc.so
   - export CXX="g++-4.8"
   - echo $CXX
