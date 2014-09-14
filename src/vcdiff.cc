@@ -2,12 +2,12 @@
 #include <vector>
 #include <iostream>
 
+#include <google/vcdecoder.h>
+#include <google/vcencoder.h>
 #include <node.h>
 #include <node_buffer.h>
 #include <v8.h>
 
-#include "third-party/open-vcdiff/include/google/vcdecoder.h"
-#include "third-party/open-vcdiff/include/google/vcencoder.h"
 #include "vcd_decoder.h"
 #include "vcd_encoder.h"
 #include "vcd_hashed_dictionary.h"

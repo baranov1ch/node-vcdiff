@@ -1,8 +1,7 @@
 #include "vcd_decoder.h"
 
+#include <google/vcdecoder.h>
 #include <node_buffer.h>
-
-#include "third-party/open-vcdiff/include/google/vcdecoder.h"
 
 VcdDecoder::VcdDecoder(
     v8::Local<v8::Object> dictionary_handle,

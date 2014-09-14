@@ -1,8 +1,7 @@
 #include "vcd_hashed_dictionary.h"
 
+#include <google/vcencoder.h>
 #include <node_buffer.h>
-
-#include "third-party/open-vcdiff/include/google/vcencoder.h"
 
 v8::Persistent<v8::Function> VcdHashedDictionary::constructor;
 

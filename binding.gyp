@@ -2,9 +2,6 @@
   "targets": [
     {
       "target_name": "vcdiff",
-      "include_dirs": [
-        "src/third-party/open-vcdiff/include",
-      ],
       "sources": [
         "src/vcd_decoder.cc",
         "src/vcd_decoder.h",
@@ -18,9 +15,8 @@
       "conditions": [
         ['OS=="linux" or OS=="mac"', {
           'libraries': [
-            '<!(pwd)/src/third-party/open-vcdiff/lib/libvcdcom.a',
-            '<!(pwd)/src/third-party/open-vcdiff/lib/libvcdenc.a',
-            '<!(pwd)/src/third-party/open-vcdiff/lib/libvcddec.a',
+            '-lvcdenc',
+            '-lvcddec',
           ],
         }],
         ['OS=="linux"', {
