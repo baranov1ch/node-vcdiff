@@ -1,9 +1,15 @@
 {
-  "name": "node-vcdiff",
+  "name": "vcdiff",
   "description": "node.js wrapper for open-vcdiff <https://code.google.com/p/open-vcdiff>",
   "version": "0.0.1",
   "author": "Alexey Baranov <me@kotiki.cc>",
   "license": "MIT",
+  "keywords": [
+    "open-vcdiff",
+    "vcdiff",
+    "sdch",
+    "compression"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/baranov1ch/node-vcdiff"
