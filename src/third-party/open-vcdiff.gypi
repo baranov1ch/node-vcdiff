@@ -63,6 +63,7 @@
     'cflags': [
       # TODO(mostynb): remove this if open-vcdiff is ever updated for c++11:
       '-Wno-deprecated-declarations',
+      '-Wno-unused-local-typedefs',
     ],
   }
 ]
