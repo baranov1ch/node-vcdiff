@@ -1,21 +1,21 @@
 {
-  "targets": [
+  'targets': [
     {
-      "target_name": "vcdiff",
-      "dependencies": [
+      'target_name': 'vcdiff',
+      'dependencies': [
         'open-vcdiff',
       ],
-      "sources": [
-        "src/vcd_decoder.cc",
-        "src/vcd_decoder.h",
-        "src/vcd_encoder.cc",
-        "src/vcd_encoder.h",
-        "src/vcd_hashed_dictionary.cc",
-        "src/vcd_hashed_dictionary.h",
-        "src/vcdiff.cc",
-        "src/vcdiff.h",
+      'sources': [
+        'src/vcd_decoder.cc',
+        'src/vcd_decoder.h',
+        'src/vcd_encoder.cc',
+        'src/vcd_encoder.h',
+        'src/vcd_hashed_dictionary.cc',
+        'src/vcd_hashed_dictionary.h',
+        'src/vcdiff.cc',
+        'src/vcdiff.h',
       ],
-      "conditions": [
+      'conditions': [
         ['OS=="linux"', {
           'cflags_cc': ['-std=c++11'],
         }],

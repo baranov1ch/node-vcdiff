@@ -66,7 +66,7 @@ out.pipe(decoder).pipe(process.stdout);
 
 ## Install
 
-  npm install vcdiff
+  `npm install vcdiff`
 
 The source is available for download from
 [GitHub](http://github.com/baranov1ch/node-vcdiff)

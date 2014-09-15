@@ -9,4 +9,3 @@ before_install:
     #libstdc++-4.8 is needed by Clang to build too
   - sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev
   - export CXX="g++-4.8"
-  - echo $CXX

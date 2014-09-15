@@ -43,7 +43,8 @@ describe 'vcdiff', ->
       (-> vcd.vcdiffEncode allowVcdTarget: true)
         .should.throw Error, /HashedDictionary/
 
-    it 'should throw if dictionary is not instance of Buffer', ->
+    it 'should throw if dictionary is not Object', ->
+      # Figure out how to test if its really HashedDictionary instance.
       (-> vcd.createVcdiffEncoder hashedDictionary: true)
         .should.throw Error, /HashedDictionary/
       (-> vcd.VcdiffEncoder hashedDictionary: true)
@@ -68,15 +69,40 @@ describe 'vcdiff', ->
         interleaved: true
       encoder.should.be.instanceof vcd.VcdiffEncoder
 
-    it 'should encode json for ascii', ->
-      dict = new Buffer 'testmehatekillomgdieyoulittledumb', 'ascii'
-      testData = new Buffer(
-        'testmehatekillomgdieyoulittledumbdieyoulittledumb'
-        'ascii')
-      e = vcd.vcdiffEncodeSync(
-        testData
-        hashedDictionary: new vcd.HashedDictionary dict
-        json: true)
+    describe 'options handling', ->
+      dict = new Buffer 'testmehatekillomgdieyoulittledumb'
+      testData = new Buffer 'testmehatekillomgdieyoulittledumbdieyoulittledumb'
+      it 'should encode json for ascii', ->
+        e = vcd.vcdiffEncodeSync(
+          testData
+          hashedDictionary: new vcd.HashedDictionary dict
+          json: true)
+        (-> JSON.parse e.toString())
+          .should.not.throw
+
+      it 'should encode interleaved', ->
+        e = vcd.vcdiffEncodeSync(
+          testData
+          hashedDictionary: new vcd.HashedDictionary dict
+          interleaved: true)
+        # extended Vcdiff format. Header should have 'S' flag.
+        e.toString()[3].should.equal 'S'
+
+      it 'should encode with checksum', ->
+        withoutChecksum = vcd.vcdiffEncodeSync(
+          testData
+          hashedDictionary: new vcd.HashedDictionary dict)
+        withChecksum = vcd.vcdiffEncodeSync(
+          testData
+          hashedDictionary: new vcd.HashedDictionary dict
+          checksum: true)
+        withChecksum.toString()[3].should.equal "S"
+        # 4 more bytes for the checksum.
+        (withChecksum.length - withoutChecksum.length).should.equal 4
+
+      xit 'should set targetMatches', ->
+        # No idea how to test it yet.
+
 
   describe 'VcdiffDecoder', ->
     it 'should throw if no options provided', ->
