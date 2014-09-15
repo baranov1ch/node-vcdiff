@@ -1,3 +1,9 @@
+// node-vcdiff
+// https://github.com/baranov1ch/node-vcdiff
+//
+// Copyright 2014 Alexey Baranov <me@kotiki.cc>
+// Released under the MIT license
+
 #include "vcd_encoder.h"
 
 #include "third-party/open-vcdiff/src/google/vcencoder.h"
