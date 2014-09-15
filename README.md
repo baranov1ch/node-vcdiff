@@ -71,6 +71,15 @@ out.pipe(decoder).pipe(process.stdout);
 The source is available for download from
 [GitHub](http://github.com/baranov1ch/node-vcdiff)
 
+## TODO
+
+#### Implement zero-copy encoding/decoding.
+
+open-vcdiff outputs data to `OutputStringInterface`. It should behave as
+`std::string` (i.e. be able to grow itself). Thus we cannot simply provide
+output node Buffer. Now open-vcdiff outputs into `std::string` which then
+copied into node Buffer. This is clearly suboptimal.
+
 ## License
 
 [MIT](LICENSE)

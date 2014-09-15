@@ -70,8 +70,9 @@ describe 'vcdiff', ->
       encoder.should.be.instanceof vcd.VcdiffEncoder
 
     describe 'options handling', ->
-      dict = new Buffer 'testmehatekillomgdieyoulittledumb'
-      testData = new Buffer 'testmehatekillomgdieyoulittledumbdieyoulittledumb'
+      dict = new Buffer 'this is a test dictionary not very long'
+      testData = new Buffer(
+        'this is a test dictionary not very long a test dictionary not')
       it 'should encode json for ascii', ->
         e = vcd.vcdiffEncodeSync(
           testData
@@ -97,12 +98,69 @@ describe 'vcdiff', ->
           hashedDictionary: new vcd.HashedDictionary dict
           checksum: true)
         withChecksum.toString()[3].should.equal "S"
-        # 4 more bytes for the checksum.
-        (withChecksum.length - withoutChecksum.length).should.equal 4
+        withChecksum.length.should.be.above withoutChecksum.length
 
       xit 'should set targetMatches', ->
-        # No idea how to test it yet.
+        # No idea how to test it yet. Perhaps, use spies.
 
+    describe 'buffering', ->
+      dict = new Buffer 'this is a test dictionary not very long'
+      testData = 'this is a test dictionary not very long plus smth'
+      hashedDict = new vcd.HashedDictionary dict
+
+      class RepeatableRead extends stream.Readable
+        constructor: (@chunk, @times) ->
+          @currentChunk = 0
+          super()
+
+        _read: ->
+          if @currentChunk < @times
+            @push @chunk
+            @currentChunk += 1
+          else
+            @push null
+
+      class Flush extends stream.Transform
+        constructor: (@readcb) ->
+          super()
+
+        _transform: (chunk, enc, next) ->
+          @push chunk
+          @readcb()
+          next()
+
+      class CountingWrite extends stream.Writable
+        constructor: (finishcb) ->
+          super()
+          @nwrites = 0
+          @on 'finish', ->
+            finishcb(@nwrites)
+
+        _write: (chunk, encoding, next) ->
+          @nwrites += 1
+          next()
+
+      it 'should buffer input', (done) ->
+        encoder = vcd.createVcdiffEncoder
+          hashedDictionary: hashedDict
+          minEncodeWindowSize: testData.length * 2
+        inp = new RepeatableRead testData, 6
+        out = new CountingWrite (nwrites) ->
+          nwrites.should.equal 3
+          done()
+        inp.pipe(encoder).pipe(out)
+
+      it 'should flush if asked', (done) ->
+        encoder = vcd.createVcdiffEncoder hashedDictionary: hashedDict
+        inp = new RepeatableRead testData, 6
+        out = new CountingWrite (nwrites) ->
+          # One flush was triggered. Default window is 4096 so we should
+          # have 1 write if it weren't for flush.
+          nwrites.should.equal 2
+          done()
+        flush = new Flush ->
+          encoder.flush()
+        inp.pipe(flush).pipe(encoder).pipe(out)
 
   describe 'VcdiffDecoder', ->
     it 'should throw if no options provided', ->
@@ -141,10 +199,13 @@ describe 'vcdiff', ->
         allowVcdTarget: true
       encoder.should.be.instanceof vcd.VcdiffDecoder
 
+    xit 'should set flags correctly', ->
+      # No idea how to test it yet. Perhaps, use spies.
+
   describe 'there and back again', ->
-    dict = new Buffer 'testmehatekillomgdieyoulittledumb'
+    dict = new Buffer 'this is a test dictionary not very long'
     hashedDict = new vcd.HashedDictionary dict
-    testData = 'testmehatekillomgdieyoulittledumbdieyoulittledumb'
+    testData = 'this is a test dictionary not very long a test dictionary not'
 
     it 'should encode and decode sync', ->
       e = vcd.vcdiffEncodeSync testData, hashedDictionary: hashedDict
@@ -167,7 +228,7 @@ describe 'vcdiff', ->
         constructor: (@data) ->
           super()
 
-        _read: () ->
+        _read: ->
           @push @data
           @data = null
 
