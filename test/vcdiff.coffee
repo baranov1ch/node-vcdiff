@@ -103,6 +103,9 @@ describe 'vcdiff', ->
       xit 'should set targetMatches', ->
         # No idea how to test it yet. Perhaps, use spies.
 
+      xit 'should return error if input invalid', ->
+        # No idea how to mangle the data to stop being valid for encoding.
+
     describe 'buffering', ->
       dict = new Buffer 'this is a test dictionary not very long'
       testData = 'this is a test dictionary not very long plus smth'
@@ -126,8 +129,10 @@ describe 'vcdiff', ->
 
         _transform: (chunk, enc, next) ->
           @push chunk
-          @readcb()
-          next()
+          self = @
+          process.nextTick ->
+            self.readcb()
+            next()
 
       class CountingWrite extends stream.Writable
         constructor: (finishcb) ->
@@ -151,12 +156,13 @@ describe 'vcdiff', ->
         inp.pipe(encoder).pipe(out)
 
       it 'should flush if asked', (done) ->
+        counter = 1
         encoder = vcd.createVcdiffEncoder hashedDictionary: hashedDict
         inp = new RepeatableRead testData, 6
         out = new CountingWrite (nwrites) ->
           # One flush was triggered. Default window is 4096 so we should
           # have 1 write if it weren't for flush.
-          nwrites.should.equal 2
+          nwrites.should.equal 6
           done()
         flush = new Flush ->
           encoder.flush()
@@ -198,6 +204,16 @@ describe 'vcdiff', ->
         dictionary: new Buffer 'test'
         allowVcdTarget: true
       encoder.should.be.instanceof vcd.VcdiffDecoder
+
+    it 'should return error if input invalid', (done) ->
+      dict = new Buffer 'this is a test dictionary not very long'
+      testData = 'this is a test dictionary not very long a test dictionary not'
+      (-> vcd.vcdiffDecodeSync testData, dictionary: dict)
+      .should.throw /Vcdiff decode error/
+
+      vcd.vcdiffDecode testData, dictionary: dict, (err, data) ->
+        err.message.should.contain.string 'Vcdiff decode error'
+        done()
 
     xit 'should set flags correctly', ->
       # No idea how to test it yet. Perhaps, use spies.
@@ -255,3 +271,22 @@ describe 'vcdiff', ->
           done()
         encodedIn.pipe(decoder).pipe(decodedOut)
       testIn.pipe(encoder).pipe(testOut)
+
+    it 'should not crash', (done) ->
+      zlib = require 'zlib'
+      encoder = vcd.createVcdiffEncoder hashedDictionary: hashedDict
+      # encoder = zlib.createGzip()
+
+      chunks = 0
+      encoder.on 'data', (arg) ->
+        if chunks == 2
+          return encoder.end()
+        encoder.write new Buffer 1024
+        encoder.flush()
+        chunks++
+      encoder.on 'end', ->
+        chunks.should.equal 2
+        done()
+
+      encoder.write new Buffer 1024
+      encoder.flush()

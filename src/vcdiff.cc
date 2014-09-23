@@ -249,7 +249,16 @@ void VcdCtx::AfterShim(uv_work_t* work_req, int status) {
 
 // static
 const char* VcdCtx::GetErrorString(VcdCtx::Error err) {
-  return "Error";
+  switch (err) {
+    case Error::INIT_ERROR:
+      return "Vcdiff initialization error";
+    case Error::ENCODE_ERROR:
+      return "Vcdiff encode error";
+    case Error::DECODE_ERROR:
+      return "Vcdiff decode error";
+    default:
+      return "Vcdiff unknown error";
+  }
 }
 
 // static
