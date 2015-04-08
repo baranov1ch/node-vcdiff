@@ -11,7 +11,7 @@ which use this library internally and serve SDCH-encoded content which could
 be comprehended by Chromium-based browsers.
 
 You can use [femtozip](http://github.com/gtoubassi/femtozip) or [experimental incremental generator](https://github.com/cscenter/SInGe/tree/master/src/dict_builder) to create dictionaries.
-Femtozip took quite a long time to generate (works for minutes and hours) dictionary. SInGe generator is much faster (seconds) and the same volume, since it never allocates during generation and uses linear algorithm based on suffix automaton. Quality is similar, since algorithm is essentially the same.
+Femtozip took quite a long time to generate dictionary(works for minutes and hours). SInGe generator is much faster (seconds) on the same volume, since it never allocates during generation and uses linear algorithm based on suffix automaton. Quality is similar, since algorithm is essentially the same.
 
 ## Quick Examples
 
