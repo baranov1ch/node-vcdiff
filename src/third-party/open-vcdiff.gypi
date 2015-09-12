@@ -56,8 +56,17 @@
       ],
     },
     'conditions': [
-      [ 'OS == "linux"', { 'include_dirs': [ 'linux' ] } ],
-      [ 'OS == "mac"', { 'include_dirs': [ 'mac' ] } ],
+      [ 'OS == "linux"', {
+        'cflags_cc': ['-std=c++11'],
+        'include_dirs': [ 'linux' ]
+      }],
+      [ 'OS == "mac"', {
+        'xcode_settings': {
+          'OTHER_CPLUSPLUSFLAGS': ['-std=c++11', '-stdlib=libc++'],
+          'MACOSX_DEPLOYMENT_TARGET': '10.7',
+        },
+        'include_dirs': [ 'mac' ]
+      }],
       [ 'OS == "win"', { 'include_dirs': [ 'win' ] } ],
     ],
     'cflags': [
