@@ -11,10 +11,11 @@
 #include "third-party/open-vcdiff/src/google/vcdecoder.h"
 
 VcdDecoder::VcdDecoder(
+    v8::Isolate* isolate,
     v8::Local<v8::Object> dictionary_handle,
     std::unique_ptr<open_vcdiff::VCDiffStreamingDecoder> decoder)
     : decoder_(std::move(decoder)),
-      dictionary_handle_(v8::Persistent<v8::Object>::New(dictionary_handle)),
+      dictionary_handle_(isolate, dictionary_handle),
       dictionary_buffer_(node::Buffer::Data(dictionary_handle)),
       dictionary_len_(node::Buffer::Length(dictionary_handle)) {
 }

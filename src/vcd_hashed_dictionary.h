@@ -10,6 +10,7 @@
 #include <memory>
 
 #include <node.h>
+#include <node_object_wrap.h>
 #include <v8.h>
 
 namespace open_vcdiff {
@@ -26,12 +27,12 @@ class VcdHashedDictionary : public node::ObjectWrap {
     return hashed_dictionary_.get();
   }
 
-  // v8 bindings
   static void Init(v8::Handle<v8::Object> exports);
-  static v8::Persistent<v8::Function> constructor;
-  static v8::Handle<v8::Value> New(const v8::Arguments& args);
 
  private:
+  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static v8::Persistent<v8::Function> constructor;
+
   std::unique_ptr<open_vcdiff::HashedDictionary> hashed_dictionary_;
 
   VcdHashedDictionary(const VcdHashedDictionary& other) = delete;

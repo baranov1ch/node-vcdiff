@@ -9,10 +9,11 @@
 #include "third-party/open-vcdiff/src/google/vcencoder.h"
 
 VcdEncoder::VcdEncoder(
+    v8::Isolate* isolate,
     v8::Local<v8::Object> hashed_dictionary,
     std::unique_ptr<open_vcdiff::VCDiffStreamingEncoder> encoder)
     : encoder_(std::move(encoder)),
-      hashed_dictionary_(v8::Persistent<v8::Object>::New(hashed_dictionary)) {
+      hashed_dictionary_(isolate, hashed_dictionary) {
 }
 
 VcdEncoder::~VcdEncoder() {

@@ -19,7 +19,8 @@ class VCDiffStreamingEncoder;
 
 class VcdEncoder : public VcdCtx::Coder {
  public:
-  VcdEncoder(v8::Local<v8::Object> hashed_dictionary,
+  VcdEncoder(v8::Isolate* isolate,
+             v8::Local<v8::Object> hashed_dictionary,
              std::unique_ptr<open_vcdiff::VCDiffStreamingEncoder> encoder);
   ~VcdEncoder();
 

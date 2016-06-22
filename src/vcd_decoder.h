@@ -19,7 +19,8 @@ class VCDiffStreamingDecoder;
 
 class VcdDecoder : public VcdCtx::Coder {
  public:
-  VcdDecoder(v8::Local<v8::Object> dictionary_handle,
+  VcdDecoder(v8::Isolate* isolate,
+             v8::Local<v8::Object> dictionary_handle,
              std::unique_ptr<open_vcdiff::VCDiffStreamingDecoder> decoder);
   ~VcdDecoder();
 
