@@ -205,11 +205,15 @@ describe 'vcdiff', ->
         allowVcdTarget: true
       encoder.should.be.instanceof vcd.VcdiffDecoder
 
-    it 'should return error if input invalid', (done) ->
+    it 'should return error if input is invalid (sync)', ->
       dict = new Buffer 'this is a test dictionary not very long'
       testData = 'this is a test dictionary not very long a test dictionary not'
       (-> vcd.vcdiffDecodeSync testData, dictionary: dict)
       .should.throw /Vcdiff decode error/
+
+    it 'should return error if input invalid (async)', (done) ->
+      dict = new Buffer 'this is a test dictionary not very long'
+      testData = 'this is a test dictionary not very long a test dictionary not'
 
       vcd.vcdiffDecode testData, dictionary: dict, (err, data) ->
         err.message.should.contain.string 'Vcdiff decode error'

@@ -22,30 +22,32 @@ VcdHashedDictionary::~VcdHashedDictionary() {
 
 // static
 void VcdHashedDictionary::Init(v8::Handle<v8::Object> exports) {
-  v8::HandleScope scope;
+  v8::Isolate* isolate = exports->GetIsolate();
 
-  // Prepare constructor template
-  v8::Local<v8::FunctionTemplate> tpl = v8::FunctionTemplate::New(New);
-  tpl->SetClassName(v8::String::NewSymbol("HashedDictionary"));
+  v8::Local<v8::String> className = v8::String::NewFromUtf8(isolate, "HashedDictionary", v8::String::kInternalizedString);
+  v8::Local<v8::FunctionTemplate> tpl = v8::FunctionTemplate::New(isolate, New);
+  tpl->SetClassName(className);
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
-  constructor = v8::Persistent<v8::Function>::New(tpl->GetFunction());
-  exports->Set(v8::String::NewSymbol("HashedDictionary"), constructor);
+  exports->Set(className, tpl->GetFunction());
 }
 
 // static
-v8::Handle<v8::Value> VcdHashedDictionary::New(const v8::Arguments& args) {
-  v8::HandleScope scope;
+void VcdHashedDictionary::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
   assert(args.Length() == 1 && "new HashedDictionary(buffer)");
   assert(node::Buffer::HasInstance(args[0]) &&
          "should pass Buffer to constructor");
+
+  v8::Isolate *isolate = args.GetIsolate();
+
   std::unique_ptr<open_vcdiff::HashedDictionary> dictionary(
       new open_vcdiff::HashedDictionary(node::Buffer::Data(args[0]),
                                         node::Buffer::Length(args[0])));
-  if (!dictionary->Init())
-    return v8::ThrowException(v8::String::New(
+  if (!dictionary->Init()) {
+    isolate->ThrowException(v8::String::NewFromUtf8(isolate,
         "Error initializing hashed dictionary"));
+    return;
+  }
   auto vcd_hashed_dict = new VcdHashedDictionary(std::move(dictionary));
   vcd_hashed_dict->Wrap(args.This());
-  return args.This();
 }

@@ -11,6 +11,8 @@
 #include <string>
 
 #include <node.h>
+#include <node_object_wrap.h>
+#include <uv.h>
 #include <v8.h>
 
 namespace open_vcdiff {
@@ -48,10 +50,10 @@ class VcdCtx : public node::ObjectWrap {
   static void Init(v8::Handle<v8::Object> exports);
   static v8::Persistent<v8::Function> constructor;
 
-  static v8::Handle<v8::Value> New(const v8::Arguments& args);
-  static v8::Handle<v8::Value> WriteAsync(const v8::Arguments& args);
-  static v8::Handle<v8::Value> WriteSync(const v8::Arguments& args);
-  static v8::Handle<v8::Value> Close(const v8::Arguments& args);
+  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void WriteAsync(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void WriteSync(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void Close(const v8::FunctionCallbackInfo<v8::Value>& args);
 
  private:
   enum class State {
@@ -63,23 +65,24 @@ class VcdCtx : public node::ObjectWrap {
 
   struct WorkData {
     VcdCtx* ctx;
+    v8::Isolate* isolate;
     const char* data;
     size_t len;
     bool is_last;
   };
 
-  static v8::Handle<v8::Value> WriteInternal(
-      const v8::Arguments& args, bool async);
+  static void WriteInternal(
+      const v8::FunctionCallbackInfo<v8::Value>& args, bool async);
   v8::Local<v8::Object> Write(
       v8::Local<v8::Object> buffer, bool is_last, bool async);
-  v8::Local<v8::Array> FinishWrite();
+  v8::Local<v8::Array> FinishWrite(v8::Isolate* isolate);
   void Process(const char* data, size_t len, bool is_last);
-  bool CheckError();
-  void SendError();
+  bool CheckError(v8::Isolate* isolate);
+  void SendError(v8::Isolate* isolate);
   void Close();
   void Reset();
   bool HasError() const;
-  v8::Local<v8::Object> GetOutputBuffer();
+  v8::Local<v8::Object> GetOutputBuffer(v8::Isolate* isolate);
 
   static const char* GetErrorString(Error err);
   static void ProcessShim(uv_work_t* work_req);
@@ -87,7 +90,7 @@ class VcdCtx : public node::ObjectWrap {
 
   std::unique_ptr<Coder> coder_;
 
-  v8::Persistent<v8::Object> in_buffer_;
+  v8::Persistent<v8::Object> in_buffer_; // hold reference when async
 
   uv_work_t work_req_;
   bool write_in_progress_ = false;
