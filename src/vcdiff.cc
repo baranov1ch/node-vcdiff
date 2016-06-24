@@ -43,7 +43,7 @@ void VcdCtx::Close() {
 
 // static
 void VcdCtx::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  auto mode = static_cast<Mode>(args[0]->Int32Value());
+  Mode mode = static_cast<Mode>(args[0]->Int32Value());
   assert((mode == Mode::ENCODE || mode == Mode::DECODE) &&
          "invalid operation mode (neither ENCODE nor DECODE");
 
@@ -91,8 +91,8 @@ void VcdCtx::WriteInternal(
   assert(node::Buffer::HasInstance(args[1]));
 
   bool is_last = args[0]->BooleanValue();
-  auto in_buf = args[1]->ToObject();
-  auto result = ctx->Write(in_buf, is_last, async);
+  v8::Local<v8::Object> in_buf = args[1]->ToObject();
+  v8::Local<v8::Object> result = ctx->Write(in_buf, is_last, async);
 
   if (result.IsEmpty()) {
     args.GetReturnValue().Set(v8::Undefined(isolate));
@@ -111,8 +111,8 @@ v8::Local<v8::Object> VcdCtx::Write(
 
   write_in_progress_ = true;
   in_buffer_.Reset(isolate, buffer);
-  auto data = node::Buffer::Data(buffer);
-  auto len = node::Buffer::Length(buffer);
+  const char* data = node::Buffer::Data(buffer);
+  size_t len = node::Buffer::Length(buffer);
 
   if (!async) {
     // sync version
@@ -134,7 +134,7 @@ v8::Local<v8::Object> VcdCtx::Write(
 v8::Local<v8::Array> VcdCtx::FinishWrite(v8::Isolate* isolate) {
   write_in_progress_ = false;
   in_buffer_.Reset();
-  auto result = v8::Array::New(isolate, 2);
+  v8::Local<v8::Array> result = v8::Array::New(isolate, 2);
   result->Set(0, GetOutputBuffer(isolate));
   result->Set(1, v8::Boolean::New(isolate, state_ == State::DONE));
   output_buffer_.clear();
@@ -205,21 +205,21 @@ bool VcdCtx::HasError() const {
 
 v8::Local<v8::Object> VcdCtx::GetOutputBuffer(v8::Isolate* isolate) {
   // TODO: avoid copying when return data.
-  auto buffer = node::Buffer::Copy(isolate,
+  v8::MaybeLocal<v8::Object> buffer = node::Buffer::Copy(isolate,
       output_buffer_.data(), output_buffer_.size());
   return buffer.ToLocalChecked();
 }
 
 // static
 void VcdCtx::Close(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  auto ctx = Unwrap<VcdCtx>(args.Holder());
+  VcdCtx* ctx = Unwrap<VcdCtx>(args.Holder());
   ctx->Close();
   args.GetReturnValue().Set(v8::Undefined(args.GetIsolate()));
 }
 
 // static
 void VcdCtx::ProcessShim(uv_work_t* work_req) {
-  auto work = static_cast<WorkData*>(work_req->data);
+  WorkData* work = static_cast<WorkData*>(work_req->data);
   work->ctx->Process(work->data, work->len, work->is_last);
 }
 
@@ -236,7 +236,7 @@ void VcdCtx::AfterShim(uv_work_t* work_req, int status) {
   if (!ctx->CheckError(isolate))
     return;
 
-  auto result = ctx->FinishWrite(isolate);
+  v8::Local<v8::Array> result = ctx->FinishWrite(isolate);
   v8::Local<v8::Value> args[2] = {
     result->Get(0),
     result->Get(1),
