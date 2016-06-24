@@ -116,7 +116,6 @@ v8::Local<v8::Object> VcdCtx::Write(
 
   if (!async) {
     // sync version
-    v8::HandleScope handle_scope(isolate);
     Process(data, len, is_last);
     if (!CheckError(isolate))
       return v8::Local<v8::Object>();
@@ -187,6 +186,8 @@ bool VcdCtx::CheckError(v8::Isolate* isolate) {
 }
 
 void VcdCtx::SendError(v8::Isolate* isolate) {
+  v8::HandleScope handle_scope(isolate);
+
   v8::Local<v8::Value> args[2] = {
     v8::String::NewFromUtf8(isolate, GetErrorString(err_)),
     v8::Number::New(isolate, static_cast<int>(err_)),
